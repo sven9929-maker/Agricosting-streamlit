@@ -77,25 +77,21 @@ def init_state():
     if "next_id" not in st.session_state:
         st.session_state.next_id = 20
 
+    # Normalise all IDs to strings to prevent int/str mismatch
+    for r in st.session_state.items:
+        r["id"] = str(r["id"])
+    for r in st.session_state.pricing:
+        r["id"] = str(r["id"]); r["item_id"] = str(r["item_id"])
+    for r in st.session_state.invoices:
+        r["id"] = str(r["id"]); r["item_id"] = str(r["item_id"])
+    for r in st.session_state.actuals:
+        r["id"] = str(r["id"]); r["item_id"] = str(r["item_id"])
+
 init_state()
 
 def nid():
     st.session_state.next_id += 1
     return str(st.session_state.next_id)
-
-def _str_ids(records, keys):
-    """Ensure specified keys are strings in all records (prevents int/str mismatch)."""
-    for r in records:
-        for k in keys:
-            if k in r:
-                r[k] = str(r[k])
-    return records
-
-# Normalise seed data IDs to strings
-_str_ids(st.session_state.items,   ["id"])
-_str_ids(st.session_state.pricing, ["id","item_id"])
-_str_ids(st.session_state.invoices,["id","item_id"])
-_str_ids(st.session_state.actuals, ["id","item_id"])
 
 def get_item(item_id):
     return next((i for i in st.session_state.items if str(i["id"]) == str(item_id)), {})
