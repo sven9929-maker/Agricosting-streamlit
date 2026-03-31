@@ -40,52 +40,43 @@ st.markdown("""
 
 # ── SESSION STATE INIT ────────────────────────────────────────────────────────
 def init_state():
+    # All IDs are strings from the start — avoids int/str mismatch on rerun
     if "items" not in st.session_state:
         st.session_state.items = [
-            {"id":1,"code":"FERT-01","name":"NPK Fertilizer","category":"Fertilizer","type":"markup","markup":15.0,"uom":"50kg bag"},
-            {"id":2,"code":"CHEM-01","name":"Pesticide A","category":"Chemicals","type":"markup","markup":12.0,"uom":"Litre"},
-            {"id":3,"code":"SEED-01","name":"Tobacco Seed","category":"Seed","type":"markup","markup":20.0,"uom":"Pack"},
-            {"id":4,"code":"HESS-01","name":"Hessian Bags","category":"Packaging","type":"recovery","markup":0.0,"uom":"Each"},
-            {"id":5,"code":"PAPER-01","name":"Tobacco Paper","category":"Packaging","type":"recovery","markup":0.0,"uom":"Ream"},
-            {"id":6,"code":"FUEL-01","name":"Diesel","category":"Fuel","type":"markup","markup":8.0,"uom":"Litre"},
-            {"id":7,"code":"TWINE-01","name":"Baling Twine","category":"Packaging","type":"recovery","markup":0.0,"uom":"Roll"},
+            {"id":"1","code":"FERT-01","name":"NPK Fertilizer","category":"Fertilizer","type":"markup","markup":15.0,"uom":"50kg bag"},
+            {"id":"2","code":"CHEM-01","name":"Pesticide A","category":"Chemicals","type":"markup","markup":12.0,"uom":"Litre"},
+            {"id":"3","code":"SEED-01","name":"Tobacco Seed","category":"Seed","type":"markup","markup":20.0,"uom":"Pack"},
+            {"id":"4","code":"HESS-01","name":"Hessian Bags","category":"Packaging","type":"recovery","markup":0.0,"uom":"Each"},
+            {"id":"5","code":"PAPER-01","name":"Tobacco Paper","category":"Packaging","type":"recovery","markup":0.0,"uom":"Ream"},
+            {"id":"6","code":"FUEL-01","name":"Diesel","category":"Fuel","type":"markup","markup":8.0,"uom":"Litre"},
+            {"id":"7","code":"TWINE-01","name":"Baling Twine","category":"Packaging","type":"recovery","markup":0.0,"uom":"Roll"},
         ]
     if "pricing" not in st.session_state:
         st.session_state.pricing = [
-            {"id":1,"item_id":1,"cost_usd":18.50,"fx_rate":27.0,"markup_pct":15.0,"qty":500},
-            {"id":2,"item_id":2,"cost_usd":12.00,"fx_rate":27.0,"markup_pct":12.0,"qty":200},
-            {"id":3,"item_id":4,"cost_usd":3.20, "fx_rate":27.0,"markup_pct":0.0, "qty":1000},
-            {"id":4,"item_id":6,"cost_usd":1.45, "fx_rate":27.0,"markup_pct":8.0, "qty":2000},
+            {"id":"11","item_id":"1","cost_usd":18.50,"fx_rate":27.0,"markup_pct":15.0,"qty":500},
+            {"id":"12","item_id":"2","cost_usd":12.00,"fx_rate":27.0,"markup_pct":12.0,"qty":200},
+            {"id":"13","item_id":"4","cost_usd":3.20, "fx_rate":27.0,"markup_pct":0.0, "qty":1000},
+            {"id":"14","item_id":"6","cost_usd":1.45, "fx_rate":27.0,"markup_pct":8.0, "qty":2000},
         ]
     if "invoices" not in st.session_state:
         st.session_state.invoices = [
-            {"id":1,"item_id":1,"supplier":"ZamFert Ltd","number":"INV-2025-001","date":"2025-02-10","currency":"USD","gross":9500.0,"vat":950.0,"vat_rec":True,"qty":500},
-            {"id":2,"item_id":2,"supplier":"AgroChems","number":"INV-2025-002","date":"2025-02-15","currency":"USD","gross":2500.0,"vat":250.0,"vat_rec":True,"qty":200},
-            {"id":3,"item_id":4,"supplier":"PackZam","number":"INV-2025-003","date":"2025-02-18","currency":"ZMW","gross":82000.0,"vat":8200.0,"vat_rec":False,"qty":1000},
-            {"id":4,"item_id":6,"supplier":"FuelDirect","number":"INV-2025-004","date":"2025-03-01","currency":"USD","gross":2950.0,"vat":295.0,"vat_rec":True,"qty":2000},
+            {"id":"21","item_id":"1","supplier":"ZamFert Ltd","number":"INV-2025-001","date":"2025-02-10","currency":"USD","gross":9500.0,"vat":950.0,"vat_rec":True,"qty":500},
+            {"id":"22","item_id":"2","supplier":"AgroChems","number":"INV-2025-002","date":"2025-02-15","currency":"USD","gross":2500.0,"vat":250.0,"vat_rec":True,"qty":200},
+            {"id":"23","item_id":"4","supplier":"PackZam","number":"INV-2025-003","date":"2025-02-18","currency":"ZMW","gross":82000.0,"vat":8200.0,"vat_rec":False,"qty":1000},
+            {"id":"24","item_id":"6","supplier":"FuelDirect","number":"INV-2025-004","date":"2025-03-01","currency":"USD","gross":2950.0,"vat":295.0,"vat_rec":True,"qty":2000},
         ]
     if "actuals" not in st.session_state:
         st.session_state.actuals = [
-            {"id":1,"item_id":1,"sage_doc":"SAGE-2025-0041","post_date":"2025-02-20","amount_zmw":256500.0,"qty":500},
-            {"id":2,"item_id":2,"sage_doc":"SAGE-2025-0042","post_date":"2025-02-22","amount_zmw":67000.0,"qty":200},
-            {"id":3,"item_id":4,"sage_doc":"SAGE-2025-0043","post_date":"2025-02-25","amount_zmw":82000.0,"qty":1000},
+            {"id":"31","item_id":"1","sage_doc":"SAGE-2025-0041","post_date":"2025-02-20","amount_zmw":256500.0,"qty":500},
+            {"id":"32","item_id":"2","sage_doc":"SAGE-2025-0042","post_date":"2025-02-22","amount_zmw":67000.0,"qty":200},
+            {"id":"33","item_id":"4","sage_doc":"SAGE-2025-0043","post_date":"2025-02-25","amount_zmw":82000.0,"qty":1000},
         ]
     if "fx" not in st.session_state:
         st.session_state.fx = {"purchase": 26.5, "pricing": 27.0, "reporting": 27.2}
     if "season" not in st.session_state:
         st.session_state.season = "2025"
     if "next_id" not in st.session_state:
-        st.session_state.next_id = 20
-
-    # Normalise all IDs to strings to prevent int/str mismatch
-    for r in st.session_state.items:
-        r["id"] = str(r["id"])
-    for r in st.session_state.pricing:
-        r["id"] = str(r["id"]); r["item_id"] = str(r["item_id"])
-    for r in st.session_state.invoices:
-        r["id"] = str(r["id"]); r["item_id"] = str(r["item_id"])
-    for r in st.session_state.actuals:
-        r["id"] = str(r["id"]); r["item_id"] = str(r["item_id"])
+        st.session_state.next_id = 100
 
 init_state()
 
