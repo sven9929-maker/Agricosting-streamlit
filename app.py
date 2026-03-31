@@ -81,10 +81,24 @@ init_state()
 
 def nid():
     st.session_state.next_id += 1
-    return st.session_state.next_id
+    return str(st.session_state.next_id)
+
+def _str_ids(records, keys):
+    """Ensure specified keys are strings in all records (prevents int/str mismatch)."""
+    for r in records:
+        for k in keys:
+            if k in r:
+                r[k] = str(r[k])
+    return records
+
+# Normalise seed data IDs to strings
+_str_ids(st.session_state.items,   ["id"])
+_str_ids(st.session_state.pricing, ["id","item_id"])
+_str_ids(st.session_state.invoices,["id","item_id"])
+_str_ids(st.session_state.actuals, ["id","item_id"])
 
 def get_item(item_id):
-    return next((i for i in st.session_state.items if i["id"] == item_id), {})
+    return next((i for i in st.session_state.items if str(i["id"]) == str(item_id)), {})
 
 def fmt_usd(v): return f"${float(v or 0):,.2f}"
 def fmt_zmw(v): return f"K{float(v or 0):,.2f}"
@@ -215,7 +229,7 @@ if page == "📊 Dashboard":
     for p in st.session_state.pricing:
         item   = get_item(p["item_id"])
         c      = calc_pricing(p)
-        actual = next((a for a in st.session_state.actuals if a["item_id"] == p["item_id"]), None)
+        actual = next((a for a in st.session_state.actuals if str(a["item_id"]) == str(p["item_id"])), None)
         act_cost = variance = None
         if actual:
             ac       = calc_actual(actual)
@@ -300,7 +314,7 @@ elif page == "💰 Commercial Pricing":
             st.info(f"**Preview** → Selling: {fmt_usd(selling)} | Margin/unit: {fmt_usd(margin)} | Total margin: {fmt_usd(margin*qty)}")
 
             if st.form_submit_button("Save Pricing", type="primary"):
-                st.session_state.pricing = [p for p in st.session_state.pricing if p["item_id"] != item_id]
+                st.session_state.pricing = [p for p in st.session_state.pricing if str(p["item_id"]) != str(item_id)]
                 st.session_state.pricing.append({"id":nid(),"item_id":item_id,"cost_usd":cost,"fx_rate":fxr,"markup_pct":mkup,"qty":qty})
                 st.success("Pricing saved!"); st.rerun()
 
@@ -479,7 +493,7 @@ elif page == "⚖️ Reconciliation":
     for p in st.session_state.pricing:
         item   = get_item(p["item_id"])
         c      = calc_pricing(p)
-        actual = next((a for a in st.session_state.actuals if a["item_id"] == p["item_id"]), None)
+        actual = next((a for a in st.session_state.actuals if str(a["item_id"]) == str(p["item_id"])), None)
         act_cost = act_margin = var_usd = var_zmw = impl_fx = None
         if actual:
             ac        = calc_actual(actual)
