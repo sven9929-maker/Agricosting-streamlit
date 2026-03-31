@@ -6,6 +6,23 @@ import copy
 
 st.set_page_config(page_title="AgriCosting Pro", page_icon="🌾", layout="wide")
 
+# ---------------- Session Init (FIXED) ----------------
+if "items" not in st.session_state:
+    st.session_state.items = []
+
+if "pricing" not in st.session_state:
+    st.session_state.pricing = []
+
+if "invoices" not in st.session_state:
+    st.session_state.invoices = []
+
+if "actuals" not in st.session_state:
+    st.session_state.actuals = []
+
+if "fx" not in st.session_state:
+    st.session_state.fx = {"reporting": 27}
+
+
 DATA_FILE = "agricosting_data.json"
 
 def load_data():
@@ -26,27 +43,6 @@ def save_data():
     with open(DATA_FILE, "w") as f:
         json.dump(data, f, indent=2)
 
-SEED_ITEMS = [
-    {"id":"1","name":"Fertilizer","type":"markup"},
-    {"id":"2","name":"Chemicals","type":"markup"},
-]
-
-data = load_data()
-
-if "items" not in st.session_state:
-    st.session_state.items = data.get("items", copy.deepcopy(SEED_ITEMS))
-
-if "pricing" not in st.session_state:
-    st.session_state.pricing = data.get("pricing", [])
-
-if "invoices" not in st.session_state:
-    st.session_state.invoices = data.get("invoices", [])
-
-if "actuals" not in st.session_state:
-    st.session_state.actuals = data.get("actuals", [])
-
-if "fx" not in st.session_state:
-    st.session_state.fx = data.get("fx", {"reporting":27})
 
 page = st.sidebar.radio(
     "Navigation",
@@ -56,13 +52,22 @@ page = st.sidebar.radio(
 if st.sidebar.button("Save"):
     save_data()
 
+
+# ---------------- Dashboard ----------------
+
 if page == "Dashboard":
     st.title("AgriCosting Pro Dashboard")
-    st.write("Items:", len(st.session_state.items))
+    st.write("Items:", len(st.session_state.get("items", [])))
+    st.write("Pricing:", len(st.session_state.get("pricing", [])))
+
+
+# ---------------- Items ----------------
 
 elif page == "Items":
     st.title("Items")
+
     name = st.text_input("Item Name")
+
     if st.button("Add Item"):
         st.session_state.items.append({
             "id": str(len(st.session_state.items)+1),
@@ -71,40 +76,81 @@ elif page == "Items":
         })
         save_data()
         st.rerun()
-    st.dataframe(pd.DataFrame(st.session_state.items))
+
+    st.dataframe(pd.DataFrame(st.session_state.get("items", [])))
+
+
+# ---------------- Pricing ----------------
 
 elif page == "Pricing":
     st.title("Pricing")
-    item = st.selectbox("Item",[i["name"] for i in st.session_state.items])
-    cost = st.number_input("Cost",0.0)
-    if st.button("Save Pricing"):
-        st.session_state.pricing.append({"item":item,"cost":cost})
-        save_data()
-        st.rerun()
-    st.dataframe(pd.DataFrame(st.session_state.pricing))
+
+    if st.session_state.items:
+
+        item = st.selectbox(
+            "Item",
+            [i["name"] for i in st.session_state.items]
+        )
+
+        cost = st.number_input("Cost", 0.0)
+
+        if st.button("Save Pricing"):
+            st.session_state.pricing.append({
+                "item": item,
+                "cost": cost
+            })
+            save_data()
+            st.rerun()
+
+    st.dataframe(pd.DataFrame(st.session_state.get("pricing", [])))
+
+
+# ---------------- Invoices ----------------
 
 elif page == "Invoices":
     st.title("Invoices")
+
     supplier = st.text_input("Supplier")
-    amount = st.number_input("Amount",0.0)
+    amount = st.number_input("Amount", 0.0)
+
     if st.button("Add Invoice"):
-        st.session_state.invoices.append({"supplier":supplier,"amount":amount})
+        st.session_state.invoices.append({
+            "supplier": supplier,
+            "amount": amount
+        })
         save_data()
         st.rerun()
-    st.dataframe(pd.DataFrame(st.session_state.invoices))
+
+    st.dataframe(pd.DataFrame(st.session_state.get("invoices", [])))
+
+
+# ---------------- Actuals ----------------
 
 elif page == "Actuals":
     st.title("Actuals")
-    amount = st.number_input("Amount",0.0)
+
+    amount = st.number_input("Amount", 0.0)
+
     if st.button("Add"):
-        st.session_state.actuals.append({"amount":amount})
+        st.session_state.actuals.append({
+            "amount": amount
+        })
         save_data()
         st.rerun()
-    st.dataframe(pd.DataFrame(st.session_state.actuals))
+
+    st.dataframe(pd.DataFrame(st.session_state.get("actuals", [])))
+
+
+# ---------------- FX ----------------
 
 elif page == "FX":
     st.title("FX Rates")
-    rate = st.number_input("Reporting FX",value=float(st.session_state.fx["reporting"]))
+
+    rate = st.number_input(
+        "Reporting FX",
+        value=float(st.session_state.fx["reporting"])
+    )
+
     if st.button("Update FX"):
         st.session_state.fx["reporting"] = rate
         save_data()
